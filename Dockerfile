@@ -18,9 +18,13 @@ USER root
 RUN apt-get update && \
     apt-get install -y docker.io
 
+# Install Node.js in the Jenkins image
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    apt-get install -y nodejs
+
 USER jenkins
 
-# Copy Node.js app from the builder stage
+# Copy only the necessary artifacts from the builder stage
 COPY --from=builder /app /app
 
 # Set the working directory to /app

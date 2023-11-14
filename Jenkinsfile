@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                git 'https://github.com/yourusername/MyWebApp.git'
+                git 'https://github.com/Sora1393/JenkinsDependencyCheckTest.git'
             }
         }
 
