@@ -17,7 +17,7 @@ pipeline {
 
                         // Use full Windows path with a leading slash
                         def containerId = sh(script: 'docker run -d -p 3000:80 -v /c/JenkinsDependencyCheckTest:/usr/share/nginx/html nginx', returnStdout: true).trim()
-                        def containerIp = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}", returnStdout: true).trim()
+                        def containerIp = sh(script: "docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}", returnStdout: true).trim()
 
                         echo "Container IP address: ${containerIp}"
                     }
