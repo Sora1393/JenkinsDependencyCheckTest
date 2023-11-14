@@ -1,23 +1,34 @@
-# Use an official Node.js runtime as a parent image
-FROM node:14
+# Stage 1: Build Node.js app
+FROM node:14 AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# Stage 2: Create final image
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install Docker inside the Jenkins image
+RUN apt-get update && \
+    apt-get install -y docker.io
+
+USER jenkins
+
+# Copy Node.js app from the builder stage
+COPY --from=builder /app /app
 
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Expose port 3000 if needed
 
-# Install any needed packages specified in package.json
-RUN npm install
-
-# Copy all local files to the image's working directory
-COPY . .
-
-# Make port 3000 available to the world outside this container
-EXPOSE 3000
-
-# Define environment variable
-ENV NAME MyWebApp
+# Define environment variable if needed
 
 # Run app.js when the container launches
 CMD ["node", "app.js"]
