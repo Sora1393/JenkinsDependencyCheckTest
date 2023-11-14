@@ -7,31 +7,21 @@ pipeline {
             }
         }
 
-        stage('Start Docker Container') {
+        stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
-                script {
-                    // Build the Docker image
-                    docker.image('nginx:latest').inside('-v C:/JenkinsDependencyCheckTest:/usr/share/nginx/html') {
-                        // Start Nginx inside the container
-                        sh 'nginx -g "daemon off;" &'
-
-                        // Use full Windows path with a leading slash
-                        def containerId = sh(script: 'docker run -d -p 3000:80 -v /c/JenkinsDependencyCheckTest:/usr/share/nginx/html nginx', returnStdout: true).trim()
-                        def containerIp = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}", returnStdout: true).trim()
-
-                        echo "Container IP address: ${containerIp}"
-                    }
-                }
+                dependencyCheck additionalArguments: ''' 
+                    -o './'
+                    -s './'
+                    -f 'ALL' 
+                    --prettyPrint
+                    --suppression suppression.xml
+                ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
             }
         }
-    }
+    }	
     post {
-        always {
-            script {
-                // Clean up: Stop and remove the Docker container
-                sh "docker stop ${containerId}"
-                sh "docker rm ${containerId}"
-            }
+        success {
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
         }
     }
 }
