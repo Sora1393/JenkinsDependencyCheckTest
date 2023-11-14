@@ -9,22 +9,28 @@ pipeline {
 
         stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
-                dependencyCheck additionalArguments: ''' 
-                    -o './'
-                    -s './'
-                    -f 'ALL' 
-                    --prettyPrint
-                    --suppression suppression.xml
-                ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-				script {
-                    def containerId = sh(script: "docker ps -q --filter ancestor=node:lts-buster-slim", returnStdout: true).trim()
+                script {
+                    // Run the Docker container and obtain its ID
+                    def containerId = sh(script: "docker run -d -p 3000:3000 node:lts-buster-slim sleep 300", returnStdout: true).trim()
+
+                    // Retrieve the container IP address
                     def containerIp = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}", returnStdout: true).trim()
 
+                    // Print the container IP address
                     echo "Container IP address: ${containerIp}"
+
+                    // Now you can run your OWASP Dependency-Check with the containerIp
+                    dependencyCheck additionalArguments: ''' 
+                        -o './'
+                        -s './'
+                        -f 'ALL' 
+                        --prettyPrint
+                        --suppression suppression.xml
+                    ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
                 }
             }
         }
-    }	
+    }   
     post {
         success {
             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
