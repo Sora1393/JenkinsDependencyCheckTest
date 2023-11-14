@@ -26,8 +26,8 @@ pipeline {
         stage('Start Web Application') {
             steps {
                 script {
-                    // Assuming you have Python installed in Jenkins
-                    sh 'python server.py'
+                    // Specify the full path to the Python executable
+                    sh '/usr/bin/python server.py'
                 }
             }
         }
