@@ -1,10 +1,41 @@
-</html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <script src="jquery-2.1.4.min.js"></script>
-<title>Hello</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <script>
+        function validateAndRedirect() {
+            // Get the search term from the input
+            var searchTerm = document.getElementById('searchInput').value;
+
+            // Check for XSS attack
+            if (containsXSS(searchTerm)) {
+                alert('Input contains potential XSS attack. Please enter a valid search term.');
+                clearInput();
+            } else {
+                // Redirect to the result page with the search term
+                window.location.href = 'result.html?searchTerm=' + encodeURIComponent(searchTerm);
+            }
+        }
+
+        function containsXSS(input) {
+            // Implement XSS validation logic here (for demonstration purposes, a simple check is used)
+            return /<script|<img|<iframe|<a href|onerror|javascript:/i.test(input);
+        }
+
+        function clearInput() {
+            // Clear the search input
+            document.getElementById('searchInput').value = '';
+        }
+    </script>
 </head>
 <body>
-
-Hello world.
+    <h1>Search Page</h1>
+    <form onsubmit="event.preventDefault(); validateAndRedirect();">
+        <label for="searchInput">Search:</label>
+        <input type="text" id="searchInput" name="searchInput" required>
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
