@@ -14,13 +14,15 @@ pipeline {
 
         stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
-                dependencyCheck additionalArguments: ''' 
-                    -o './'
-                    -s './'
-                    -f 'ALL' 
-                    --prettyPrint
-                    --suppression suppression.xml
-                ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                script {
+                    dependencyCheck additionalArguments: ''' 
+                        -o './'
+                        -s './'
+                        -f 'ALL' 
+                        --prettyPrint
+                        --suppression suppression.xml
+                    ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                }
             }
         }
     }	
