@@ -10,8 +10,8 @@ pipeline {
         stage('Start Docker Container') {
             steps {
                 script {
-                    // Use backslashes for Windows path
-                    def containerId = sh(script: 'docker run -d -p 3000:80 -v C:\\JenkinsDependencyCheckTest:/usr/share/nginx/html nginx', returnStdout: true).trim()
+                    // Use full Windows path with a leading slash
+                    def containerId = sh(script: 'docker run -d -p 3000:80 -v /c/JenkinsDependencyCheckTest:/usr/share/nginx/html nginx', returnStdout: true).trim()
                     def containerIp = sh(script: "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${containerId}", returnStdout: true).trim()
 
                     echo "Container IP address: ${containerIp}"
