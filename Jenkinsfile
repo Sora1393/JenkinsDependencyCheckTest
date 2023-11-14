@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:lts-buster-slim'
-            args '-u root -p 3000:3000'
-        }
-    }
+    agent any
     stages {
         stage('Checkout SCM') {
             steps {
