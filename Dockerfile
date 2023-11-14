@@ -25,7 +25,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
 USER jenkins
 
 # Copy only the necessary artifacts from the builder stage
-COPY --from=builder /app /app
+COPY --from=builder /app .
 
 # Set the working directory to /app
 WORKDIR /app
