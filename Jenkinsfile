@@ -22,15 +22,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Start Web Application') {
-            steps {
-                script {
-                    // Specify the full path to the Python executable
-                    sh '/usr/bin/python server.py'
-                }
-            }
-        }
     }
 
     post {
